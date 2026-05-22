@@ -8,13 +8,15 @@ export interface ApartmentTileProps {
 }
 
 /**
- * Apartment tile in the шахматка grid. Fixed 88px tall to keep groups visually aligned.
+ * Apartment tile in the шахматка grid. Fixed 88px tall AND single-column width
+ * regardless of text content.
  *
- * Visual rules (per Figma):
- * - normal:  white bg, link-arrow ↗ in top-right corner
- * - warning: amber bg, red `!` circle in top-right (no arrow)
- * - error:   pink bg, red `!` circle in top-right (no arrow)
- * - bottom row: static label "кадастровый номер" (with key icon for ok, ✕ for error)
+ * Visual rules (per Figma + user feedback):
+ * - top-right corner: ↗ link-arrow on EVERY tile (ok / warning / error)
+ * - bottom-left: status indicator + text label
+ *     - ok      → 🔑 link icon + «кадастровый номер»
+ *     - warning → 🟡 ! circle  + «{warningNote}»
+ *     - error   → 🔴 ! circle  + «не связан с помещением»
  */
 export function ApartmentTile({ premise, onClick }: ApartmentTileProps) {
   const tone = premise.status;
@@ -31,10 +33,6 @@ export function ApartmentTile({ premise, onClick }: ApartmentTileProps) {
         ? '1px solid var(--color-warning-200)'
         : '1px solid var(--color-error-200)';
 
-  const bottomIcon =
-    tone === 'ok'
-      ? '24-actions-attachment-link'
-      : '24-actions-close';
   const bottomLabel =
     tone === 'ok'
       ? 'кадастровый номер'
@@ -58,50 +56,28 @@ export function ApartmentTile({ premise, onClick }: ApartmentTileProps) {
         borderRadius: 12,
         padding: '10px 12px',
         height: 88,
+        minWidth: 0,
         display: 'flex',
         flexDirection: 'column',
         cursor: 'pointer',
         color: 'var(--color-text-primary)',
         transition: 'border-color .15s, transform .1s, box-shadow .15s',
+        overflow: 'hidden',
       }}
     >
-      {/* Top-right indicator: either link-arrow (normal) or red ! (problem) */}
-      {tone === 'ok' ? (
-        <span
-          aria-hidden
-          style={{
-            position: 'absolute',
-            top: 10,
-            right: 10,
-            color: 'var(--color-action-primary)',
-            display: 'inline-flex',
-          }}
-        >
-          <Icon name="link-arrow" size={12} style={{ color: 'inherit' }} />
-        </span>
-      ) : (
-        <span
-          aria-hidden
-          style={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            width: 18,
-            height: 18,
-            borderRadius: '50%',
-            background:
-              tone === 'warning' ? 'var(--color-warning-500)' : 'var(--color-error-500)',
-            color: '#fff',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 12,
-            fontWeight: 700,
-          }}
-        >
-          !
-        </span>
-      )}
+      {/* Top-right: always the diagonal arrow ↗ */}
+      <span
+        aria-hidden
+        style={{
+          position: 'absolute',
+          top: 10,
+          right: 10,
+          color: 'var(--color-action-primary)',
+          display: 'inline-flex',
+        }}
+      >
+        <Icon name="link-arrow" size={12} style={{ color: 'inherit' }} />
+      </span>
 
       <span style={{ fontSize: 13, fontWeight: 600 }}>Кв. {premise.number}</span>
       <span
@@ -110,12 +86,13 @@ export function ApartmentTile({ premise, onClick }: ApartmentTileProps) {
       >
         {premise.area} м²
       </span>
+
       <span
         style={{
           marginTop: 'auto',
-          display: 'inline-flex',
+          display: 'flex',
           alignItems: 'center',
-          gap: 4,
+          gap: 6,
           fontSize: 11,
           color:
             tone === 'ok'
@@ -127,17 +104,52 @@ export function ApartmentTile({ premise, onClick }: ApartmentTileProps) {
           minWidth: 0,
         }}
       >
-        <Icon name={bottomIcon} size={12} style={{ color: 'inherit', flexShrink: 0 }} />
+        {tone === 'ok' ? (
+          <Icon
+            name="24-actions-attachment-link"
+            size={12}
+            style={{ color: 'inherit', flexShrink: 0 }}
+          />
+        ) : (
+          <AlertCircle tone={tone} />
+        )}
         <span
           style={{
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
+            minWidth: 0,
           }}
+          title={bottomLabel}
         >
           {bottomLabel}
         </span>
       </span>
     </button>
+  );
+}
+
+function AlertCircle({ tone }: { tone: 'warning' | 'error' }) {
+  const bg = tone === 'warning' ? 'var(--color-warning-500)' : 'var(--color-error-500)';
+  return (
+    <span
+      aria-hidden
+      style={{
+        flexShrink: 0,
+        width: 14,
+        height: 14,
+        borderRadius: '50%',
+        background: bg,
+        color: '#fff',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 10,
+        fontWeight: 700,
+        lineHeight: 1,
+      }}
+    >
+      !
+    </span>
   );
 }

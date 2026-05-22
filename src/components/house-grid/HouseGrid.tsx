@@ -78,7 +78,7 @@ export function HouseGrid({ premises, onPremiseClick }: HouseGridProps) {
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
+                gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
                 gap: 12,
               }}
             >
@@ -106,7 +106,7 @@ export function HouseGrid({ premises, onPremiseClick }: HouseGridProps) {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
+              gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
               gap: 12,
             }}
           >
