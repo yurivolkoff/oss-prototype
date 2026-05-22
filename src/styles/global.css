@@ -1,0 +1,146 @@
+/* Reset + base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body-md, 16px);
+  line-height: var(--line-height-body-md, 24px);
+  color: var(--color-text-primary);
+  background: var(--color-background-page);
+  font-feature-settings: var(--font-feature-numeric);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+a {
+  color: var(--color-text-link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Layout */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: 768px;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  padding: 24px 0 40px;
+}
+
+/* Logo */
+.logo-dom {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-accent-600);
+  color: #fff;
+  padding: 6px 10px 5px;
+  border-radius: 6px;
+  line-height: 1;
+}
+.logo-dom__brand {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: lowercase;
+}
+.logo-dom__product {
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: lowercase;
+  margin-top: 2px;
+}
+
+/* Icon-mask helper */
+.icon-mask {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-color: currentColor;
+  flex-shrink: 0;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
+  -webkit-mask-size: contain;
+          mask-size: contain;
+  vertical-align: middle;
+}
+
+/* Numeric tabular utility */
+.num-mono {
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+
+/* High-contrast accessibility theme */
+:root[data-theme='high-contrast'] {
+  --color-background-page: #000;
+  --color-background-surface: #000;
+  --color-background-surface-subtle: #000;
+  --color-text-primary: #fff;
+  --color-text-secondary: #ffd700;
+  --color-text-link: #ffd700;
+  --color-border-default: #fff;
+  --color-action-primary: #ffd700;
+  --color-action-primary-hover: #fff;
+  --color-text-on-action: #000;
+}
+
+:root[data-theme='high-contrast'] body {
+  font-size: 18px;
+}
