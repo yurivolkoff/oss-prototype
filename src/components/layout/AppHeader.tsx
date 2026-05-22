@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from '../ui/Icon';
 import { notImplemented } from '../../lib/toast';
 
+const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+
 export function AppHeader() {
   const navigate = useNavigate();
   return (
@@ -24,25 +26,20 @@ export function AppHeader() {
         <button
           type="button"
           onClick={() => navigate('/')}
-          aria-label="На главную"
+          aria-label="Госуслуги.Дом — на главную"
           style={{ display: 'inline-flex' }}
         >
-          <span className="logo-dom">
-            <span className="logo-dom__brand">госуслуги</span>
-            <span className="logo-dom__product">дом</span>
-          </span>
+          <img
+            src={`${base}/assets/logos/gosuslugi-dom.svg`}
+            alt="Госуслуги.Дом"
+            height={32}
+          />
         </button>
-        <span aria-hidden style={{ width: 1, height: 36, background: 'var(--color-neutral-300)' }} />
-        <span
-          style={{
-            fontSize: 11,
-            lineHeight: '14px',
-            color: 'var(--color-text-secondary)',
-            maxWidth: 280,
-          }}
-        >
-          Государственная информационная система ЖКХ
-        </span>
+        <img
+          src={`${base}/assets/logos/gis-zhkh.svg`}
+          alt="Государственная информационная система ЖКХ"
+          height={32}
+        />
         <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 16 }}>
           <button
             type="button"
