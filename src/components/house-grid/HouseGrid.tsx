@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { Premise } from '../../lib/types';
 import { ApartmentTile } from './ApartmentTile';
 import { NonResidentialTile } from './NonResidentialTile';
+import { Button } from '../ui/Button';
 
 export interface HouseGridProps {
   premises: Premise[];
@@ -12,6 +13,8 @@ interface GroupKey {
   entrance: number;
   floor: number;
 }
+
+const INITIAL_TILE_LIMIT = 25;
 
 function groupApartments(list: Premise[]): Array<{ key: GroupKey; items: Premise[] }> {
   const map = new Map<string, { key: GroupKey; items: Premise[] }>();
@@ -27,10 +30,31 @@ function groupApartments(list: Premise[]): Array<{ key: GroupKey; items: Premise
   );
 }
 
+/** Take groups until we accumulate at least `limit` tiles; never split a group. */
+function takeUntilLimit(
+  groups: Array<{ key: GroupKey; items: Premise[] }>,
+  limit: number
+) {
+  const out: typeof groups = [];
+  let count = 0;
+  for (const g of groups) {
+    out.push(g);
+    count += g.items.length;
+    if (count >= limit) break;
+  }
+  return { visible: out, total: groups.reduce((n, g) => n + g.items.length, 0) };
+}
+
 export function HouseGrid({ premises, onPremiseClick }: HouseGridProps) {
+  const [expanded, setExpanded] = useState(false);
   const apartments = premises.filter((p) => p.type === 'apartment');
   const nonResidential = premises.filter((p) => p.type === 'non_residential');
   const groups = groupApartments(apartments);
+
+  const { visible, total } = expanded
+    ? { visible: groups, total: apartments.length }
+    : takeUntilLimit(groups, INITIAL_TILE_LIMIT);
+  const shownTiles = visible.reduce((n, g) => n + g.items.length, 0);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -39,12 +63,12 @@ export function HouseGrid({ premises, onPremiseClick }: HouseGridProps) {
           По заданным фильтрам ничего не найдено
         </div>
       ) : (
-        groups.map((g) => (
+        visible.map((g) => (
           <section key={`${g.key.entrance}-${g.key.floor}`}>
             <h3
               style={{
                 margin: '0 0 12px',
-                fontSize: 15,
+                fontSize: 14,
                 fontWeight: 600,
                 color: 'var(--color-text-primary)',
               }}
@@ -66,15 +90,23 @@ export function HouseGrid({ premises, onPremiseClick }: HouseGridProps) {
         ))
       )}
 
+      {!expanded && shownTiles < total && (
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
+          <Button variant="secondary" onClick={() => setExpanded(true)}>
+            Показать ещё {total - shownTiles}
+          </Button>
+        </div>
+      )}
+
       {nonResidential.length > 0 && (
         <section>
-          <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 600 }}>
+          <h3 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 600 }}>
             Нежилые помещения
           </h3>
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
+              gridTemplateColumns: 'repeat(2, 1fr)',
               gap: 12,
             }}
           >

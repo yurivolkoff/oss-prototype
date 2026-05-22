@@ -65,10 +65,12 @@ export function Button({
       : { opacity: 0.4, cursor: 'not-allowed' }
     : {};
 
+  const variantClass = `btn-${variant}`;
+
   return (
     <button
       {...rest}
-      className={className}
+      className={className ? `${variantClass} ${className}` : variantClass}
       style={{ ...base, ...variantStyle, ...disabledStyle, ...style }}
     >
       {children}

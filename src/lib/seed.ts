@@ -7,7 +7,7 @@ export const seedHouse: House = {
   totalArea: 4419.7,
   apartmentsCount: 120,
   nonResidentialCount: 5,
-  floorsCount: 6,
+  floorsCount: 5,
   dataUpdatedAt: '2022-04-09',
   cadastralLinkedCount: 116,
   duplicatesCount: 98,
@@ -65,7 +65,8 @@ function buildApartments(): Premise[] {
     '5-3-1': { status: 'error', issues: ['no_cadastral'], note: 'кадастровый номер не связан с помещением' },
     '5-5-4': { status: 'error', issues: ['duplicate'], note: 'дублирующий кадастровый номер' },
     // Подъезд 6 — включает Кв. №15 на этаже 4, slot 2 (см. ниже)
-    '6-4-2': { status: 'error', issues: ['no_cadastral'], note: 'кадастровый номер не связан с помещением' },
+    // Issue both: no_cadastral + wrong_area — Figma shows both errors in modal for Кв.№15.
+    '6-4-2': { status: 'error', issues: ['no_cadastral', 'wrong_area'], note: 'кадастровый номер не связан с помещением' },
   };
 
   let counter = 1;

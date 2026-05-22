@@ -201,19 +201,14 @@ function Metric({ label, value }: { label: string; value: string }) {
 
 function PreparationBlock1() {
   const { meeting } = useMeetingStore();
-  const dataReady: Array<{
-    tone: 'success' | 'warning' | 'error';
-    rating: string;
-    text: string;
-    counter: string;
-    sub: string;
-  }> = [
+  const dataReady: StatusRowItemMini[] = [
     {
       tone: 'success',
       rating: 'хорошая оценка',
       text: 'Кадастровые номера связаны с помещениями в ГИС ЖКХ',
       counter: '116 из 120',
       sub: 'помещений',
+      updatedAt: '18.03.2000',
     },
     {
       tone: 'success',
@@ -221,21 +216,17 @@ function PreparationBlock1() {
       text: 'Разница между общей площадью дома и суммой площадей помещений',
       counter: '19.7',
       sub: 'м²',
+      updatedAt: '09.04.2022',
     },
   ];
-  const digitalPotential: Array<{
-    tone: 'success' | 'warning' | 'error';
-    rating: string;
-    text: string;
-    counter: string;
-    sub: string;
-  }> = [
+  const digitalPotential: StatusRowItemMini[] = [
     {
       tone: 'success',
       rating: 'высокая оценка',
       text: 'Собственники помещений дома получают уведомления на Госуслугах',
       counter: '274 из 360',
       sub: 'собственника',
+      hasInlineLink: true,
     },
     {
       tone: 'error',
@@ -243,6 +234,7 @@ function PreparationBlock1() {
       text: 'Собственники помещений дома проголосуют в мобильном приложении «Госуслуги.Дом»',
       counter: '98 из 360',
       sub: 'собственника',
+      hasInlineLink: true,
     },
     {
       tone: 'error',
@@ -250,6 +242,7 @@ function PreparationBlock1() {
       text: 'Доля помещений не принадлежащих физлицам',
       counter: '23 из 120',
       sub: 'помещений',
+      hasInlineLink: true,
     },
   ];
 
@@ -299,11 +292,6 @@ function PreparationBlock1() {
         {digitalPotential.map((row, i) => (
           <StatusRowMini key={i} {...row} />
         ))}
-        <div style={{ marginTop: 12 }}>
-          <button type="button" onClick={notImplemented} style={{ color: 'var(--color-action-primary)', fontSize: 14, fontWeight: 500 }}>
-            Подробнее
-          </button>
-        </div>
       </SubCard>
     </div>
   );
@@ -323,19 +311,27 @@ function SubCard({ children }: { children: React.ReactNode }) {
   );
 }
 
+interface StatusRowItemMini {
+  tone: 'success' | 'warning' | 'error';
+  rating: string;
+  text: string;
+  counter: string;
+  sub: string;
+  /** Footnote under text: «данные обновлены DD.MM.YYYY» */
+  updatedAt?: string;
+  /** Show inline link «Подробнее» under text (per-metric, used in Цифровой потенциал). */
+  hasInlineLink?: boolean;
+}
+
 function StatusRowMini({
   tone,
   rating,
   text,
   counter,
   sub,
-}: {
-  tone: 'success' | 'warning' | 'error';
-  rating: string;
-  text: string;
-  counter: string;
-  sub: string;
-}) {
+  updatedAt,
+  hasInlineLink,
+}: StatusRowItemMini) {
   const iconColor =
     tone === 'success'
       ? 'var(--color-success-500)'
@@ -358,6 +354,32 @@ function StatusRowMini({
       <div>
         <Pill tone={tone}>{rating}</Pill>
         <div style={{ marginTop: 6, fontSize: 14, lineHeight: '20px' }}>{text}</div>
+        {updatedAt && (
+          <div
+            style={{
+              marginTop: 4,
+              fontSize: 12,
+              color: 'var(--color-text-muted)',
+            }}
+          >
+            данные обновлены {updatedAt}
+          </div>
+        )}
+        {hasInlineLink && (
+          <button
+            type="button"
+            onClick={notImplemented}
+            className="link-hover"
+            style={{
+              marginTop: 6,
+              color: 'var(--color-action-primary)',
+              fontSize: 13,
+              fontWeight: 500,
+            }}
+          >
+            Подробнее
+          </button>
+        )}
       </div>
       <div style={{ textAlign: 'right' }}>
         <div className="num-mono" style={{ fontSize: 16, fontWeight: 600 }}>

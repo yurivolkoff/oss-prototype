@@ -52,7 +52,7 @@ export function TabBar({ tabs, activeKey, onChange }: TabBarProps) {
                 color:
                   t.state === 'verified'
                     ? 'var(--color-success-500)'
-                    : 'var(--color-warning-600)',
+                    : 'var(--color-text-muted)',
                 display: 'inline-flex',
               }}
             >

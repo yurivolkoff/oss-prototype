@@ -57,6 +57,7 @@ export function Accordion({
         type="button"
         onClick={handleClick}
         aria-expanded={isOpen}
+        className="accordion-header"
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -66,6 +67,7 @@ export function Accordion({
           textAlign: 'left',
           color: 'var(--color-text-primary)',
           cursor: 'pointer',
+          transition: 'background-color .12s',
         }}
       >
         {variant === 'numbered' && number !== undefined && (

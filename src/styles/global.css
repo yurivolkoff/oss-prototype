@@ -127,6 +127,129 @@ img {
   font-feature-settings: 'tnum' 1, 'lnum' 1;
 }
 
+/* ───── Interactive states ───── */
+
+/* Buttons (UI Kit Button.tsx wraps native button). Hover/active by variant. */
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:hover,
+button:focus-visible {
+  outline-offset: 2px;
+}
+
+/* Link-style buttons (text-only ghost links) */
+.link-hover:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.link-hover:active {
+  opacity: 0.7;
+}
+
+/* Header / footer icon buttons */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.icon-btn:hover {
+  background-color: var(--color-neutral-100);
+}
+
+.icon-btn:active {
+  background-color: var(--color-neutral-200);
+}
+
+/* Apartment tiles in шахматка */
+.tile {
+  outline: 0;
+}
+
+.tile:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(11, 17, 23, 0.08);
+}
+
+.tile--ok:hover {
+  border-color: var(--color-action-primary) !important;
+}
+
+.tile--warning:hover {
+  border-color: var(--color-warning-500) !important;
+}
+
+.tile--error:hover {
+  border-color: var(--color-error-500) !important;
+}
+
+.tile:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Inputs / textareas focus */
+input,
+textarea,
+select {
+  transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: var(--color-action-primary) !important;
+  box-shadow: 0 0 0 3px var(--color-accent-100);
+}
+
+input:hover:not(:disabled),
+textarea:hover:not(:disabled),
+select:hover:not(:disabled) {
+  background-color: var(--color-neutral-100);
+}
+
+/* Accordion / Card row hover (handled via :hover where applicable) */
+details summary {
+  cursor: pointer;
+}
+
+.accordion-header:hover {
+  background-color: var(--color-neutral-50);
+}
+
+.accordion-header:active {
+  background-color: var(--color-neutral-100);
+}
+
+/* Tighter — primary button hover variant: handled inline below */
+.btn-primary:hover {
+  filter: brightness(0.96);
+}
+
+.btn-primary:active {
+  filter: brightness(0.92);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-accent-200) !important;
+}
+
+.btn-secondary:active {
+  background-color: var(--color-accent-300) !important;
+}
+
+.btn-ghost:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 /* High-contrast accessibility theme */
 :root[data-theme='high-contrast'] {
   --color-background-page: #000;

@@ -98,6 +98,7 @@ export function PrepHouseBScreen() {
             tone="success"
             rating="хорошая оценка"
             title="Кадастровые номера связаны с помещениями в ГИС ЖКХ"
+            description="данные обновлены 18.03.2000"
             counter="116 из 120"
             counterCaption="помещений"
             showInfoIcon
@@ -110,6 +111,7 @@ export function PrepHouseBScreen() {
               <button
                 type="button"
                 onClick={notImplemented}
+                className="link-hover"
                 style={{ color: 'var(--color-action-primary)', fontSize: 14, fontWeight: 500 }}
               >
                 Связать кадастровые номера
@@ -130,6 +132,7 @@ export function PrepHouseBScreen() {
                   setChips(new Set(['duplicate']));
                   gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
+                className="link-hover"
                 style={{ color: 'var(--color-action-primary)', fontSize: 14, fontWeight: 500 }}
               >
                 Внести изменения
@@ -140,7 +143,7 @@ export function PrepHouseBScreen() {
       </Card>
 
       <Card ref={gridRef} style={{ padding: 24, marginTop: 16 }}>
-        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>Шахматка по дому</h2>
+        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>«Шахматка» по дому</h2>
 
         <div
           style={{

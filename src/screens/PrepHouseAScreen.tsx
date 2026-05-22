@@ -112,16 +112,24 @@ export function PrepHouseAScreen() {
 
       <div style={{ marginTop: 16 }}>
         <InfoBlock>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
-            <span style={{ fontWeight: 500 }}>Нашли ошибку?</span>
-            <button
-              type="button"
-              onClick={notImplemented}
-              style={{ color: 'var(--color-action-primary)', fontWeight: 500 }}
-            >
-              Направить обращение Росреестр
-            </button>
+          <div style={{ fontWeight: 600, marginBottom: 4 }}>Нашли ошибку?</div>
+          <div style={{ color: 'var(--color-text-secondary)', marginBottom: 8 }}>
+            Направьте обращение для уточнения данных
           </div>
+          <button
+            type="button"
+            onClick={notImplemented}
+            className="link-hover"
+            style={{
+              color: 'var(--color-action-primary)',
+              fontWeight: 500,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+            }}
+          >
+            Направить обращение Росреестр
+          </button>
         </InfoBlock>
       </div>
 
