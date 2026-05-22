@@ -62,8 +62,11 @@ export function ApartmentModal({ premise, onClose }: ApartmentModalProps) {
 
   if (!premise) return null;
 
+  // Same wording as ApartmentTile tooltip → consistency.
   const cadastralError = premise.issues.includes('no_cadastral')
-    ? 'Нет кадастрового номера'
+    ? premise.issues.includes('duplicate')
+      ? 'Дублирующий кадастровый номер'
+      : 'Нет кадастрового номера'
     : null;
   const areaError = premise.issues.includes('wrong_area')
     ? 'Проверьте площадь квартиры'
@@ -124,12 +127,12 @@ export function ApartmentModal({ premise, onClose }: ApartmentModalProps) {
         <TextInput
           label="кадастровый номер"
           defaultValue={premise.cadastralNumber}
-          error={cadastralError ? `❌ ${cadastralError}` : null}
+          error={cadastralError}
         />
         <TextInput
           label="площадь помещения, м²"
           defaultValue={String(premise.area)}
-          error={areaError ? `❌ ${areaError}` : null}
+          error={areaError}
         />
       </div>
 

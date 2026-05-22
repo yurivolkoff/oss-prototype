@@ -158,15 +158,22 @@ async function main() {
     '03.3 — Карточка «Дополнительная информация»'
   );
   await expect(
-    await page.getByText('Шахматка по дому').isVisible(),
-    '03.4 — Карточка «Шахматка по дому»'
+    await page.getByText('«Шахматка» по дому').isVisible(),
+    '03.4 — Карточка «Шахматка» по дому'
   );
   await expect(
     await page.getByText('Подъезд 1, этаж 1').isVisible(),
     '03.5 — Группа подъезд/этаж рендерится'
   );
 
-  const tileCount = await page.locator('button:has-text("Кв. №")').count();
+  // Expand all tiles for full-list assertions
+  const showMoreBtn = page.getByRole('button', { name: /Показать ещё/ });
+  if (await showMoreBtn.count() > 0) {
+    await showMoreBtn.click();
+    await page.waitForTimeout(150);
+  }
+
+  const tileCount = await page.locator('button:has-text("Кв. ")').count();
   await expect(tileCount >= 100, `03.6 — Плиток квартир рендерится много (есть ${tileCount}, ожидаем ≥100)`);
 
   await expect(
@@ -177,14 +184,14 @@ async function main() {
   // ─── 4. Filter chip + duplicate jump ─────────────────────────────────────
   await page.getByRole('button', { name: 'дубль', exact: true }).click();
   await page.waitForTimeout(150);
-  const afterDup = await page.locator('button:has-text("Кв. №")').count();
+  const afterDup = await page.locator('button:has-text("Кв. ")').count();
   await expect(afterDup < tileCount, `03.8 — Chip «дубль» сужает список (было ${tileCount}, стало ${afterDup})`);
   // снимаем chip
   await page.getByRole('button', { name: 'дубль', exact: true }).click();
   await page.waitForTimeout(150);
 
-  // ─── 5. Click error tile (Кв. №15) — opens modal ────────────────────────
-  await page.getByRole('button', { name: /Квартира №15.*есть проблема/ }).click();
+  // ─── 5. Click error tile (Кв. 15) — opens modal ────────────────────────
+  await page.getByRole('button', { name: /Квартира 15,.*Нет кадастрового номера/i }).click();
   await page.waitForTimeout(300);
   await shot(page, '04-apartment-modal');
 
@@ -193,7 +200,7 @@ async function main() {
     '04.1 — Модалка квартиры открывается'
   );
   await expect(
-    await page.getByText('❌ Нет кадастрового номера').isVisible(),
+    await page.getByRole('dialog').getByText('Нет кадастрового номера', { exact: true }).isVisible(),
     '04.2 — Helper-text «Нет кадастрового номера»'
   );
   // Tab-bar: 3 tabs

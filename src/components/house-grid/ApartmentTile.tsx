@@ -8,15 +8,15 @@ export interface ApartmentTileProps {
 }
 
 /**
- * Apartment tile in the шахматка grid. Fixed 88px tall AND single-column width
- * regardless of text content.
+ * Apartment tile in the шахматка grid.
  *
- * Visual rules (per Figma + user feedback):
- * - top-right corner: ↗ link-arrow on EVERY tile (ok / warning / error)
- * - bottom-left: status indicator + text label
- *     - ok      → 🔑 link icon + «кадастровый номер»
- *     - warning → 🟡 ! circle  + «{warningNote}»
- *     - error   → 🔴 ! circle  + «не связан с помещением»
+ * Layout rules:
+ * - constant width (parent grid uses minmax(0, 1fr))
+ * - constant 88px height
+ * - top-right: horizontal → arrow on EVERY tile (ok / warning / error)
+ * - bottom-left: status indicator + SHORT label («КН» / «Нет КН» / «Площадь»)
+ * - on hover: tooltip with the FULL error or info text (same wording as
+ *   the apartment modal helper)
  */
 export function ApartmentTile({ premise, onClick }: ApartmentTileProps) {
   const tone = premise.status;
@@ -33,14 +33,8 @@ export function ApartmentTile({ premise, onClick }: ApartmentTileProps) {
         ? '1px solid var(--color-warning-200)'
         : '1px solid var(--color-error-200)';
 
-  const bottomLabel =
-    tone === 'ok'
-      ? 'кадастровый номер'
-      : tone === 'warning'
-        ? premise.warningNote ?? 'площадь расходится с реестром'
-        : 'кадастровый номер не связан с помещением';
-
-  const ariaLabel = `Квартира ${premise.number}, ${premise.area} м²${tone !== 'ok' ? ', есть проблема' : ''}`;
+  const { shortLabel, fullLabel } = labelsForTone(tone, premise);
+  const ariaLabel = `Квартира ${premise.number}, ${premise.area} м². ${fullLabel}`;
 
   return (
     <button
@@ -62,10 +56,10 @@ export function ApartmentTile({ premise, onClick }: ApartmentTileProps) {
         cursor: 'pointer',
         color: 'var(--color-text-primary)',
         transition: 'border-color .15s, transform .1s, box-shadow .15s',
-        overflow: 'hidden',
+        overflow: 'visible',
       }}
     >
-      {/* Top-right: always the diagonal arrow ↗ */}
+      {/* Top-right: horizontal arrow → on every tile */}
       <span
         aria-hidden
         style={{
@@ -76,7 +70,7 @@ export function ApartmentTile({ premise, onClick }: ApartmentTileProps) {
           display: 'inline-flex',
         }}
       >
-        <Icon name="link-arrow" size={12} style={{ color: 'inherit' }} />
+        <Icon name="24-navigation-arrow-right" size={14} style={{ color: 'inherit' }} />
       </span>
 
       <span style={{ fontSize: 13, fontWeight: 600 }}>Кв. {premise.number}</span>
@@ -120,13 +114,49 @@ export function ApartmentTile({ premise, onClick }: ApartmentTileProps) {
             whiteSpace: 'nowrap',
             minWidth: 0,
           }}
-          title={bottomLabel}
         >
-          {bottomLabel}
+          {shortLabel}
         </span>
+      </span>
+
+      {/* Tooltip on hover (CSS-driven; see global.css .tile-tooltip) */}
+      <span className="tile-tooltip" role="tooltip">
+        {fullLabel}
       </span>
     </button>
   );
+}
+
+function labelsForTone(
+  tone: Premise['status'],
+  premise: Premise
+): { shortLabel: string; fullLabel: string } {
+  if (tone === 'ok') {
+    return {
+      shortLabel: 'КН',
+      fullLabel: premise.cadastralNumber
+        ? `Кадастровый номер: ${premise.cadastralNumber}`
+        : 'Кадастровый номер',
+    };
+  }
+  if (tone === 'warning') {
+    return {
+      shortLabel: 'Площадь',
+      fullLabel: premise.warningNote ?? 'Проверьте площадь квартиры',
+    };
+  }
+  // error
+  const hasNoCadastral = premise.issues.includes('no_cadastral');
+  if (hasNoCadastral) {
+    return {
+      shortLabel: 'Нет КН',
+      fullLabel: 'Нет кадастрового номера',
+    };
+  }
+  return {
+    shortLabel: 'Дубль',
+    fullLabel: 'Дублирующий кадастровый номер',
+  };
 }
 
 function AlertCircle({ tone }: { tone: 'warning' | 'error' }) {

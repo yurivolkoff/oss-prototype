@@ -9,10 +9,18 @@ export interface NonResidentialTileProps {
 
 export function NonResidentialTile({ premise, onClick }: NonResidentialTileProps) {
   const isError = premise.status === 'error';
+  const shortLabel = isError ? 'Нет КН' : 'КН';
+  const fullLabel = isError
+    ? 'Нет кадастрового номера'
+    : premise.cadastralNumber
+      ? `Кадастровый номер: ${premise.cadastralNumber}`
+      : 'Кадастровый номер';
+
   return (
     <button
       type="button"
       onClick={onClick}
+      aria-label={`${premise.number}, ${premise.area} м². ${fullLabel}`}
       className={`tile tile--${isError ? 'error' : 'ok'}`}
       style={{
         position: 'relative',
@@ -29,7 +37,7 @@ export function NonResidentialTile({ premise, onClick }: NonResidentialTileProps
         flexDirection: 'column',
         cursor: 'pointer',
         transition: 'border-color .15s, transform .1s, box-shadow .15s',
-        overflow: 'hidden',
+        overflow: 'visible',
       }}
     >
       <span
@@ -42,7 +50,7 @@ export function NonResidentialTile({ premise, onClick }: NonResidentialTileProps
           display: 'inline-flex',
         }}
       >
-        <Icon name="link-arrow" size={12} style={{ color: 'inherit' }} />
+        <Icon name="24-navigation-arrow-right" size={14} style={{ color: 'inherit' }} />
       </span>
       <span style={{ fontSize: 13, fontWeight: 600 }}>{premise.number}</span>
       <span
@@ -98,8 +106,11 @@ export function NonResidentialTile({ premise, onClick }: NonResidentialTileProps
             minWidth: 0,
           }}
         >
-          {isError ? 'нет кадастрового номера' : 'кадастровый номер'}
+          {shortLabel}
         </span>
+      </span>
+      <span className="tile-tooltip" role="tooltip">
+        {fullLabel}
       </span>
     </button>
   );
